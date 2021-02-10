@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon budget</title>
+</head>
+<body>
+    <div id ="app">
+        <p>Date du jour : {{ dateDuJourEditee }}</p>
+        <ul>Dépenses
+            <li v-for="elt in listeDepenses">
+                {{ elt.montant }} / {{ elt.frequence }} / {{ elt.description }} / {{ elt.prochaineEcheanceEditee() }} / {{ elt.montantBudgetise() }}
+            </li>
+        </ul>
+        Total annuel des dépenses = {{ totalMensuelDepenses }} </br>
+        Provisions en date de référence (jour de paie) = {{ provisionsEnDateDeReference }}
+        <ul>Rentrées
+            <li v-for="elt in listeRentrees">
+                {{ elt.montant }} / {{ elt.frequence }} / {{ elt.description }} /  {{ elt.prochaineEcheanceEditee() }}
+            </li>
+        </ul>
+        Total annuel des rentrées = {{ totalMensuelRentrees }}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="vue.js"></script>
+</body>
+</html>
