@@ -6,17 +6,17 @@
 </head>
 <body>
     <div id ="app">
-        <p>Date du jour : {{ dateDuJourEditee }}</p></br></br>
+        <p>Date du jour : {{ dateDuJourEditee }}</p></br>
         <p>Provision en compte courant (calculée à la date de réference) : {{ provisionsEnDateDeReference }} </p>
         <ul>Dépenses :
             <li v-for="elt in listeDepenses">
-                {{ elt.montant }} / {{ elt.frequence }} / {{ elt.description }} / {{ elt.prochaineEcheanceEditee() }} / / {{ elt.montantBudgetise() }}
+                {{ elt.montant }} / {{ elt.frequence }} / {{ elt.description }} / {{ elt.prochaineEcheanceEditee() }} / {{ elt.montantBudgetise() }}
             </li>
         </ul>
         Total annuel des dépenses = {{ totalMensuelDepenses }} </br>
         <ul>Rentrées mensuelles (annuelles pas gérées) :
             <li v-for="elt in listeRentrees">
-                {{ elt.montant }} / {{ elt.description }} /  {{ elt.prochaineEcheanceEditee() }}
+                {{ elt.montant }} / {{ elt.description }} / {{ elt.prochaineEcheanceEditee() }}
             </li>
         </ul>
         Total annuel des rentrées = {{ totalMensuelRentrees }}

@@ -9,7 +9,48 @@ var donneeVue = {
     rentreeDeReference : null
 };
 
-/* Les fonctions aussi */
+/* Les fonctions */
+
+function editionDate(date){
+    return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear(); /* getDay renvoit le jout de la semaine (0-->6) !!!! */
+}
+const calculTotalMensuelDepenses = function(){
+    var total = 0;
+    for(var i = 0, j = donneeVue.listeDepenses.length ; i < j ; i++){
+        if(donneeVue.listeDepenses[i].frequence === "mensuel"){
+            total += (donneeVue.listeDepenses[i].montant * 12)
+        }
+        else{
+            if(donneeVue.listeDepenses[i].frequence === "annuel"){
+                total += donneeVue.listeDepenses[i].montant;
+            }
+        }
+    }
+    return total;
+};
+
+const calculTotalMensuelRentrees = function(){
+    var total = 0;
+    for(var i = 0, j = donneeVue.listeRentrees.length ; i < j ; i++){
+        total += (donneeVue.listeRentrees[i].montant * 12)
+    }
+    return total;
+};
+
+const calculProvisionsEnDateDeReference = function(){
+    let provisionsEnDateDeReference = 0;
+    for(var i = 0, j = donneeVue.listeDepenses.length ; i < j ; i++ ){
+        provisionsEnDateDeReference += donneeVue.listeDepenses[i].montantBudgetise();
+    }
+    for(var i = 0, j = donneeVue.listeRentrees.length ; i < j ; i++){
+        provisionsEnDateDeReference -= donneeVue.listeRentrees[i].montant;
+    }
+    return provisionsEnDateDeReference;
+};
+
+const initialisationVue = function(){
+    donneeVue.dateDuJourEditee = editionDate(donneeVue.dateDuJour);
+}
 
 function calculEcheance(frequence, jour, mois){
     let dateCalculee;
@@ -39,7 +80,7 @@ function calculEcheance(frequence, jour, mois){
                 dateCalculee = new Date(donneeVue.dateDuJour.getFullYear(), mois[i] - 1, jour);
                 if(dateCalculee <= donneeVue.dateDuJour){
                     if(i === (mois.length - 1)){ /* Dernière occurrence */
-                        dateCalculee = new Date(donneeVue.dateDuJourEditee.getFullYear() + 1, mois[0] - 1, jour);
+                        dateCalculee = new Date(donneeVue.dateDuJour.getFullYear() + 1, mois[0] - 1, jour);
                     }
                     else{
                         dateCalculee = new Date(donneeVue.dateDuJour.getFullYear(), mois[i + 1] - 1, jour);
@@ -93,7 +134,7 @@ function calculMontantBudgetise(dateDeSimulation, dateEcheance, frequence, monta
         default :
             break;
     }
-    return montantBudgetise;
+    return Math.round(montantBudgetise);
 }
 
 function dayDiff(d1, d2)
@@ -116,7 +157,7 @@ const Depense = function(famille, frequence, description, montant, jour, mois){
       return calculEcheance(this.frequence, this.jour, this.mois);
   };
   this.prochaineEcheanceEditee = function(){
-      return this.prochaineEcheance().toDateString();
+      return editionDate(this.prochaineEcheance());
   };
   this.montantBudgetise = function(){
       return calculMontantBudgetise(donneeVue.rentreeDeReference.prochaineEcheance(), this.prochaineEcheance(), this.frequence, this.montant);
@@ -157,54 +198,13 @@ const Rentree = function(famille, description, montant, jour){
       return calculEcheance("mensuel", this.jour, null);
   };
   this.prochaineEcheanceEditee = function(){
-      return this.prochaineEcheance().toDateString();
+      return editionDate(this.prochaineEcheance());
   };
 };
 donneeVue.rentreeDeReference = new Rentree("salaire", "Salaire SCS", 3750, 28);
 donneeVue.listeRentrees.push(donneeVue.rentreeDeReference);
 donneeVue.listeRentrees.push(new Rentree("allocation", "Allocation Quentin", 132, 28));
 donneeVue.listeRentrees.push(new Rentree("loyer", "Loyer brut Arlon", 930, 3));
-
-/* Les fonctions */
-
-
-const calculTotalMensuelDepenses = function(){
-  var total = 0;
-  for(var i = 0, j = donneeVue.listeDepenses.length ; i < j ; i++){
-      if(donneeVue.listeDepenses[i].frequence === "mensuel"){
-          total += (donneeVue.listeDepenses[i].montant * 12)
-      }
-      else{
-          if(donneeVue.listeDepenses[i].frequence === "annuel"){
-              total += donneeVue.listeDepenses[i].montant;
-          }
-      }
-  }
-  return total;
-};
-
-const calculTotalMensuelRentrees = function(){
-    var total = 0;
-    for(var i = 0, j = donneeVue.listeRentrees.length ; i < j ; i++){
-        total += (donneeVue.listeRentrees[i].montant * 12)
-         }
-    return total;
-};
-
-const calculProvisionsEnDateDeReference = function(){
-    let provisionsEnDateDeReference = 0;
-    for(var i = 0, j = donneeVue.listeDepenses.length ; i < j ; i++ ){
-        provisionsEnDateDeReference += donneeVue.listeDepenses[i].montantBudgetise();
-    }
-    for(var i = 0, j = donneeVue.listeRentrees.length ; i < j ; i++){
-        provisionsEnDateDeReference -= donneeVue.listeRentrees[i].montant;
-    }
-    return provisionsEnDateDeReference;
-};
-
-const initialisationVue = function(){
-    donneeVue.dateDuJourEditee = donneeVue.dateDuJour.toDateString();
-}
 
 /* Mon application Vue.js */
 
