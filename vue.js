@@ -6,7 +6,9 @@ var donneeVue = {
     dateDuJour : new Date(),
     listeDepenses : [],
     listeRentrees : [],
-    rentreeDeReference : null
+    rentreeDeReference : null,
+    soldeCompte : 0,
+    resultatVerificationProvision : " "
 };
 
 /* Les fonctions */
@@ -14,6 +16,7 @@ var donneeVue = {
 function editionDate(date){
     return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear(); /* getDay renvoit le jout de la semaine (0-->6) !!!! */
 }
+
 const calculTotalMensuelDepenses = function(){
     var total = 0;
     for(var i = 0, j = donneeVue.listeDepenses.length ; i < j ; i++){
@@ -50,7 +53,11 @@ const calculProvisionsEnDateDeReference = function(){
 
 const initialisationVue = function(){
     donneeVue.dateDuJourEditee = editionDate(donneeVue.dateDuJour);
-}
+};
+
+const checkProvision = function(){
+    /* if(donneeVue.soldeCompte === ) provisionsEnDateDeReference */
+};
 
 function calculEcheance(frequence, jour, mois){
     let dateCalculee;
@@ -144,10 +151,37 @@ function dayDiff(d1, d2)
     return new Number(d2 - d1).toFixed(0);
 }
 
+const fonctionComparaisonDepense = function(depense1, depense2){
+  if (depense1.montantBudgetMensualise() > depense2.montantBudgetMensualise()){
+      return -1;
+  }
+  else{
+      return 1;
+  }
+};
+
+const calculMontantBudgetMensualise = function(frequence, montant){
+    switch (frequence){
+        case "mensuel" :
+            return Math.round(montant);
+            break;
+
+        case "trimestriel" :
+            return Math.round(montant / 4);
+            break;
+
+        case "annuel" :
+            return Math.round(montant / 12);
+            break;
+
+        default :
+            return Math.round(montant);
+    }
+};
 /* Les classes de fonction */
 
-const Depense = function(famille, frequence, description, montant, jour, mois){
-  this.famille = famille;
+const Depense = function(categorie, frequence, description, montant, jour, mois){
+  this.categorie = categorie;
   this.frequence = frequence;
   this.description = description;
   this.montant = montant;
@@ -162,6 +196,9 @@ const Depense = function(famille, frequence, description, montant, jour, mois){
   this.montantBudgetise = function(){
       return calculMontantBudgetise(donneeVue.rentreeDeReference.prochaineEcheance(), this.prochaineEcheance(), this.frequence, this.montant);
     };
+  this.montantBudgetMensualise = function(){
+      return calculMontantBudgetMensualise(this.frequence, this.montant);
+  };
 };
 
 /* Eau ???  Appels de fonds trimestriel ??? */
@@ -189,8 +226,10 @@ donneeVue.listeDepenses.push(new Depense("appartement", "annuel", "Revenu cadast
 donneeVue.listeDepenses.push(new Depense("maison", "annuel", "Revenu cadastral Lottert", 552, 19, [9]));
 donneeVue.listeDepenses.push(new Depense("santé", "annuel", "Mutuelle", 150, 19, [1]));
 
-const Rentree = function(famille, description, montant, jour){
-  this.famille = famille;
+donneeVue.listeDepenses.sort(fonctionComparaisonDepense);
+
+const Rentree = function(categorie, description, montant, jour){
+  this.categorie = categorie;
   this.description = description;
   this.montant = montant;
   this.jour = jour;
@@ -217,6 +256,7 @@ const app = new Vue(
             totalMensuelRentrees : calculTotalMensuelRentrees,
             provisionsEnDateDeReference : calculProvisionsEnDateDeReference,
         },
+        methods : {verificationProvision : checkProvision},
         created : initialisationVue
     }
 );
