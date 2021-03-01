@@ -51,12 +51,21 @@ const calculProvisionsEnDateDeReference = function(){
     return provisionsEnDateDeReference;
 };
 
+const calculProvisionsMensuellesEnDateDeReference = function(){
+    let total = 0;
+    for(var i = 0, j = donneeVue.listeDepenses.length ; i < j ; i++){
+        total += donneeVue.listeDepenses[i].montantBudgetise();
+        console.log(donneeVue.listeDepenses[i].montantBudgetise());
+    }
+    return total;
+};
+
 const initialisationVue = function(){
     donneeVue.dateDuJourEditee = editionDate(donneeVue.dateDuJour);
 };
 
 const checkProvision = function(){
-    /* if(donneeVue.soldeCompte === ) provisionsEnDateDeReference */
+    donneeVue.resultatVerificationProvision = "A développer...";
 };
 
 function calculEcheance(frequence, jour, mois){
@@ -255,6 +264,7 @@ const app = new Vue(
             totalMensuelDepenses : calculTotalMensuelDepenses,
             totalMensuelRentrees : calculTotalMensuelRentrees,
             provisionsEnDateDeReference : calculProvisionsEnDateDeReference,
+            provisionsMensuellesEnDateDeReference : calculProvisionsMensuellesEnDateDeReference
         },
         methods : {verificationProvision : checkProvision},
         created : initialisationVue

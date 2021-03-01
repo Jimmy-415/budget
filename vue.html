@@ -11,13 +11,14 @@
             <input v-model="soldeCompte">
             <button v-on:click="verificationProvision">Check</button>{{ resultatVerificationProvision}}
         </p>
-        <p>Provision en compte courant (calculée à la date de réference) : {{ provisionsEnDateDeReference }} </p>
+        <p>Provision en compte courant (calculée à la date de réference du {{ rentreeDeReference.prochaineEcheanceEditee()}}) : {{ provisionsEnDateDeReference }} </p>
         <ul>Dépenses :
             <li v-for="elt in listeDepenses">
-                {{ elt.montant }} / {{ elt.frequence }} / {{ elt.description }} / {{ elt.prochaineEcheanceEditee() }} / {{ elt.montantBudgetMensualise() }}
+                {{ elt.montant }} / {{ elt.frequence }} / {{ elt.description }} / {{ elt.prochaineEcheanceEditee() }} / {{ elt.montantBudgetMensualise() }} / {{ elt.montantBudgetise() }}
             </li>
         </ul>
-        Total annuel des dépenses = {{ totalMensuelDepenses }} </br>
+        <p>Total mensuel des provisions = {{ provisionsMensuellesEnDateDeReference }} </p></br>
+        <p>Total annuel des dépenses = {{ totalMensuelDepenses }} </p></br>
         <ul>Rentrées mensuelles (annuelles pas gérées) :
             <li v-for="elt in listeRentrees">
                 {{ elt.montant }} / {{ elt.description }} / {{ elt.prochaineEcheanceEditee() }}
